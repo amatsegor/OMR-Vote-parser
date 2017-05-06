@@ -11,18 +11,15 @@ class Parser {
     static parse(path) {
         let parser = new Parser();
         parser.parseRtfFile(path)
-            .then(result => parser.parseHtml(result))
+            .then(result => himalaya.parse(result))
             .then(json => parser.parseJson(json))
             .then(parsed => console.log(parsed))
-            .catch(reject => console.log(reject));
-    }
-    static bin2String(array) {
-        return String.fromCharCode.apply(String, array);
+            .catch(rejectReason => console.log(rejectReason));
     }
     parseRtfFile(filePath) {
         return new Promise((resolve, reject) => {
             const fileContents = fs.readFileSync(filePath);
-            unrtf(Parser.bin2String(fileContents), (error, result) => {
+            unrtf(this.bin2String(fileContents), (error, result) => {
                 if (error) {
                     reject(error);
                 }
@@ -31,9 +28,6 @@ class Parser {
                 }
             });
         });
-    }
-    parseHtml(htmlString) {
-        return himalaya.parse(htmlString);
     }
     parseJson(array) {
         let rawVoteArray = array
@@ -53,6 +47,9 @@ class Parser {
                 vote += " " + array[5];
             return new Vote_1.Vote(id, name, vote);
         });
+    }
+    bin2String(array) {
+        return String.fromCharCode.apply(String, array);
     }
 }
 exports.Parser = Parser;
