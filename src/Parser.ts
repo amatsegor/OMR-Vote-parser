@@ -1,3 +1,4 @@
+import {Observable} from "rxjs";
 /**
  * Created by amatsegor on 5/6/17.
  */
@@ -9,24 +10,28 @@ import {Vote} from "./Vote";
 
 export class Parser {
 
-    static parse(path: string) {
-        let parser = new Parser();
-        parser.parseRtfFile(path)
-            .then(result => himalaya.parse(result))
-            .then(json => parser.parseJson(json))
-            .then(parsed => {
-                console.log(path);
-                const jsonString = JSON.stringify(parsed);
-                console.log(jsonString);
-                let filename = path.substring(0, path.indexOf(".rtf")) + ".json";
-                fs.writeFileSync(filename, jsonString)
-            })
-            .catch(rejectReason => {
-                console.log(rejectReason)
-            })
+    static parse(path: string): Observable<string> {
+        return Observable.create(observer => {
+            let parser = new Parser();
+            parser.parseRtfFile(path)
+                .then(result => himalaya.parse(result))
+                .then(json => parser.parseJson(json))
+                .then(parsed => {
+                    console.log(path);
+                    const jsonString = JSON.stringify(parsed);
+                    console.log(jsonString);
+                    observer.next(jsonString);
+                    // let filename = path.substring(0, path.indexOf(".rtf")) + ".json";
+                    // fs.writeFileSync(filename, jsonString)
+                })
+                .catch(rejectReason => {
+                    Observable.throw(rejectReason);
+                    console.log(rejectReason)
+                })
+        })
     }
 
-    parseRtfFile(filePath: string) {
+    parseRtfFile(filePath: string): Promise<string> {
         return new Promise((resolve, reject) => {
             this.readFile(filePath)
                 .then(data => {

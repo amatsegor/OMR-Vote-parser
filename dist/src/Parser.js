@@ -1,27 +1,32 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const rxjs_1 = require("rxjs");
 /**
  * Created by amatsegor on 5/6/17.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 const unrtf = require('unrtf');
 const himalaya = require("himalaya");
 const fs = require("fs");
 const Vote_1 = require("./Vote");
 class Parser {
     static parse(path) {
-        let parser = new Parser();
-        parser.parseRtfFile(path)
-            .then(result => himalaya.parse(result))
-            .then(json => parser.parseJson(json))
-            .then(parsed => {
-            console.log(path);
-            const jsonString = JSON.stringify(parsed);
-            console.log(jsonString);
-            let filename = path.substring(0, path.indexOf(".rtf")) + ".json";
-            fs.writeFileSync(filename, jsonString);
-        })
-            .catch(rejectReason => {
-            console.log(rejectReason);
+        return rxjs_1.Observable.create(observer => {
+            let parser = new Parser();
+            parser.parseRtfFile(path)
+                .then(result => himalaya.parse(result))
+                .then(json => parser.parseJson(json))
+                .then(parsed => {
+                console.log(path);
+                const jsonString = JSON.stringify(parsed);
+                console.log(jsonString);
+                observer.next(jsonString);
+                // let filename = path.substring(0, path.indexOf(".rtf")) + ".json";
+                // fs.writeFileSync(filename, jsonString)
+            })
+                .catch(rejectReason => {
+                rxjs_1.Observable.throw(rejectReason);
+                console.log(rejectReason);
+            });
         });
     }
     parseRtfFile(filePath) {
