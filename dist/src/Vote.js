@@ -1,7 +1,7 @@
+"use strict";
 /**
  * Created by amatsegor on 5/6/17.
  */
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Vote {
     constructor(id, name, vote) {
@@ -11,3 +11,4 @@ class Vote {
     }
 }
 exports.Vote = Vote;
+//# sourceMappingURL=Vote.js.map

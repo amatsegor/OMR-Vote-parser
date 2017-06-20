@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "outDir": "./dist/",
-    "sourceMap": false,
+    "sourceMap": true,
     "noImplicitAny": false,
     "module": "commonjs",
-    "target": "es2015"
+    "target": "es6"
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "examples/example1.ts"
   ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
-  ]
+  ],
+  "compileOnSave": true
 }

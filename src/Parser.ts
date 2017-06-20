@@ -14,24 +14,47 @@ export class Parser {
         parser.parseRtfFile(path)
             .then(result => himalaya.parse(result))
             .then(json => parser.parseJson(json))
-            .then(parsed => console.log(parsed))
-            .catch(rejectReason => console.log(rejectReason))
+            .then(parsed => {
+                console.log(path);
+                const jsonString = JSON.stringify(parsed);
+                console.log(jsonString);
+                let filename = path.substring(0, path.indexOf(".rtf")) + ".json";
+                fs.writeFileSync(filename, jsonString)
+            })
+            .catch(rejectReason => {
+                console.log(rejectReason)
+            })
     }
 
-    parseRtfFile(filePath: string): Promise<string> {
+    parseRtfFile(filePath: string) {
         return new Promise((resolve, reject) => {
-            const fileContents = fs.readFileSync(filePath);
-            unrtf(this.bin2String(fileContents), (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(result.html);
-                }
-            });
+            this.readFile(filePath)
+                .then(data => {
+                    unrtf(this.bin2String(data), null, (error, result) => {
+                        if (error || result.html == '') {
+                            reject(error ? error : "Result of file " + filePath + " is empty");
+                        } else {
+                            resolve(result.html);
+                        }
+                    });
+                });
         })
     }
 
-    private parseJson(array: any[]) {
+    private readFile(filePath: string): Promise<number[]> {
+        return new Promise((resolve, reject) => {
+            fs.readFile(filePath, (error, data) => {
+                let path = filePath;
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(data);
+                }
+            });
+        });
+    }
+
+    private parseJson(array: any[]): Vote[] {
         let rawVoteArray = array
             .filter(obj => Array.isArray(obj.children))
             .map(obj => obj.children)

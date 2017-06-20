@@ -11,12 +11,15 @@
     "type": "git",
     "url": "git@github.com:amatsegor/OMR-Vote-parser.git"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "dependencies": {
+    "himalaya": "^0.2.7",
     "mkpath": "0.1.0",
+    "node-curl-download": "0.0.2",
     "rtf-parser": "^1.0.4",
+    "rxjs": "latest",
     "unrtf": "^0.2.1",
-    "himalaya": "^0.2.7"
+    "unzip": "latest"
   },
   "devDependencies": {
     "@types/node": "^7.0.16",
