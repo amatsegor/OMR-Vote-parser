@@ -12,6 +12,7 @@
     "url": "git@github.com:amatsegor/OMR-Vote-parser.git"
   },
   "main": "dist/src/index.js",
+  "typings": "./dist/src/index.d.ts",
   "dependencies": {
     "himalaya": "^0.2.7",
     "mkpath": "0.1.0",
