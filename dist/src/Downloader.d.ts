@@ -4,5 +4,5 @@ import {isNullOrUndefined} from "util";
  */
 
 export declare class Downloader {
-    static get(url: string, callback: (filePath: string) => void, fileName?: string);
+    static get(url: string, callback: (filePath: string) => void, fileName?: string): void;
 }

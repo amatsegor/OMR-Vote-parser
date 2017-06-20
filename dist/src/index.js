@@ -17,10 +17,4 @@ exports.doDaFuckingJob = function (url) {
         });
     });
 };
-var Downloader_2 = require("./Downloader");
-exports.Downloader = Downloader_2.Downloader;
-var Parser_2 = require("./Parser");
-exports.Parser = Parser_2.Parser;
-var Unzipper_2 = require("./Unzipper");
-exports.Unzipper = Unzipper_2.Unzipper;
 //# sourceMappingURL=index.js.map

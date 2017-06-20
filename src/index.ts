@@ -16,7 +16,3 @@ export let doDaFuckingJob = function(url: string): Observable<string> {
         })
     })
 };
-
-export {Downloader} from "./Downloader";
-export {Parser} from "./Parser";
-export {Unzipper} from "./Unzipper";
