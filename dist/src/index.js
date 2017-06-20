@@ -7,7 +7,7 @@ const rxjs_1 = require("rxjs");
 /**
  * Created by amatsegor on 6/20/17.
  */
-exports.doDaFuckingJob = function (url) {
+exports.parseVotingsZip = function (url) {
     return rxjs_1.Observable.create(observer => {
         Downloader_1.Downloader.get(url, filePath => {
             Unzipper_1.Unzipper.unzip(filePath)
