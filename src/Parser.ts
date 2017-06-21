@@ -95,8 +95,6 @@ export class Parser {
             votings: votings
         };
 
-        console.log(project);
-
         return {project: project, deputies: deputies};
     }
 

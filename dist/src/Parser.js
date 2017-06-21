@@ -82,7 +82,6 @@ class Parser {
             title: title,
             votings: votings
         };
-        console.log(project);
         return { project: project, deputies: deputies };
     }
     readFile(filePath) {
