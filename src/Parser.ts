@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
  * Created by amatsegor on 5/6/17.
  */
 
+let rtfparser = require("rtf-parser");
 const unrtf = require('unrtf');
 const himalaya = require("himalaya");
 const fs = require("fs");
@@ -13,16 +14,14 @@ export class Parser {
     static parse(path: string): Observable<string> {
         return Observable.create(observer => {
             let parser = new Parser();
-            parser.parseRtfFile(path)
+            parser.unrtf(path)
                 .then(result => himalaya.parse(result))
                 .then(json => parser.parseJson(json))
                 .then(parsed => {
-                    console.log(path);
                     const jsonString = JSON.stringify(parsed);
+                    console.log(path);
                     console.log(jsonString);
                     observer.next(jsonString);
-                    // let filename = path.substring(0, path.indexOf(".rtf")) + ".json";
-                    // fs.writeFileSync(filename, jsonString)
                 })
                 .catch(rejectReason => {
                     Observable.throw(rejectReason);
@@ -31,11 +30,11 @@ export class Parser {
         })
     }
 
-    parseRtfFile(filePath: string): Promise<string> {
+    unrtf(filePath: string): Promise<string> {
         return new Promise((resolve, reject) => {
             this.readFile(filePath)
                 .then(data => {
-                    unrtf(this.bin2String(data), null, (error, result) => {
+                    unrtf(Parser.bin2String(data), {}, (error, result) => {
                         if (error || result.html == '') {
                             reject(error ? error : "Result of file " + filePath + " is empty");
                         } else {
@@ -79,7 +78,7 @@ export class Parser {
             });
     }
 
-    private bin2String(array: number[]): string {
+    private static bin2String(array: number[]): string {
         return String.fromCharCode.apply(String, array);
     }
 }

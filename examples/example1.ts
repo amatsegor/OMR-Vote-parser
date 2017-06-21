@@ -20,7 +20,9 @@ Downloader.get("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_
     console.log(filePath);
     Unzipper.unzip(filePath)
         .subscribe(val => {
-            Parser.parse(val);
+            Parser.parse(val)
+                .subscribe(json => {
+                });
             console.log(val);
         }, err => {
 

@@ -25,7 +25,6 @@ class Unzipper {
                     const filePath = "temp/" + fileName;
                     entry.pipe(fs.createWriteStream(filePath));
                     observer.next(filePath);
-                    // console.log(filePath);
                 }
                 else {
                     entry.autodrain();

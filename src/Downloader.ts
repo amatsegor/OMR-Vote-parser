@@ -15,7 +15,6 @@ export class Downloader {
         let dl = new Download(url, filePath);
 
         dl.on('end', (code) => {
-            console.log("Code: " + code);
             callback(filePath);
         });
 

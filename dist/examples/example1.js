@@ -19,7 +19,9 @@ Downloader_1.Downloader.get("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet
     console.log(filePath);
     Unzipper_1.Unzipper.unzip(filePath)
         .subscribe(val => {
-        Parser_1.Parser.parse(val);
+        Parser_1.Parser.parse(val)
+            .subscribe(json => {
+        });
         console.log(val);
     }, err => {
     });
