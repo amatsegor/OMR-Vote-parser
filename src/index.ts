@@ -3,16 +3,25 @@ import {Parser} from "./Parser";
 import {Unzipper} from "./Unzipper";
 import {Observable} from "rxjs";
 import {Voting} from "./models/Voting";
+import {Project} from "./models/Project";
 /**
  * Created by amatsegor on 6/20/17.
  */
 
-export let parseVotingsZip = function(url: string): Observable<Voting[]> {
+export let parseVotingsZip = function(url: string): Observable<Project[]> {
     return Observable.create(observer => {
         Downloader.get(url, filePath => {
             Unzipper.unzip(filePath)
-                .subscribe(file => {
-                    Parser.parse(file).subscribe(json => observer.next(json))
+                .subscribe(files => {
+                    let array = [];
+                    files.forEach(file => {
+                        Parser.parse(file).subscribe(project => {
+                            array.push(project);
+                            if (array.length == files.length){
+                                observer.next(array);
+                            }
+                        })
+                    });
                 })
         })
     })

@@ -16,6 +16,7 @@ class Unzipper {
                     rxjs_1.Observable.throw("Unable to create target folder");
                 });
             }
+            let filesArray = [];
             fs.createReadStream(path)
                 .pipe(unzip.Parse())
                 .on('entry', (entry) => {
@@ -24,11 +25,14 @@ class Unzipper {
                 if (type == 'File' && fileName.match("Gol.+.rtf")) {
                     const filePath = "temp/" + fileName;
                     entry.pipe(fs.createWriteStream(filePath));
-                    observer.next(filePath);
+                    filesArray.push(filePath);
                 }
                 else {
                     entry.autodrain();
                 }
+            })
+                .on('close', () => {
+                observer.next(filesArray);
             });
         });
     }

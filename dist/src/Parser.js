@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
-const Voting_1 = require("./models/Voting");
 /**
  * Created by amatsegor on 5/6/17.
  */
@@ -69,7 +68,7 @@ class Parser {
             };
             if (array[5])
                 vote += " " + array[5];
-            return new Voting_1.Voting(deputy, vote);
+            return { deputy: deputy, vote: vote };
         });
         let project = {
             id: Parser.hashCode(votingTime),

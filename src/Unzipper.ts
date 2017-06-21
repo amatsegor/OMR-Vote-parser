@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 
 export class Unzipper {
 
-    static unzip(path: string): Observable<string> {
+    static unzip(path: string): Observable<string[]> {
 
         return Observable.create(observer => {
             if (!fs.existsSync("temp")) {
@@ -18,6 +18,8 @@ export class Unzipper {
                 })
             }
 
+            let filesArray: string[] = [];
+
             fs.createReadStream(path)
                 .pipe(unzip.Parse())
                 .on('entry', (entry) => {
@@ -26,10 +28,13 @@ export class Unzipper {
                     if (type == 'File' && fileName.match("Gol.+.rtf")) {
                         const filePath = "temp/" + fileName;
                         entry.pipe(fs.createWriteStream(filePath));
-                        observer.next(filePath);
+                        filesArray.push(filePath);
                     } else {
                         entry.autodrain();
                     }
+                })
+                .on('close', () => {
+                    observer.next(filesArray);
                 })
         });
     }

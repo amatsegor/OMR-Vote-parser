@@ -14,7 +14,7 @@ let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутні�
 
 export class Parser {
 
-    static parse(path: string): Observable<Voting[]> {
+    static parse(path: string): Observable<Project> {
         return Observable.create(observer => {
             let parser = new Parser();
             parser.parseRtf(path)
@@ -76,7 +76,7 @@ export class Parser {
                     fatherName: fatherName
                 };
                 if (array[5]) vote += " " + array[5];
-                return new Voting(deputy, vote);
+                return {deputy: deputy, vote: vote};
             });
 
         let project: Project = {

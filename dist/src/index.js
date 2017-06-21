@@ -11,8 +11,16 @@ exports.parseVotingsZip = function (url) {
     return rxjs_1.Observable.create(observer => {
         Downloader_1.Downloader.get(url, filePath => {
             Unzipper_1.Unzipper.unzip(filePath)
-                .subscribe(file => {
-                Parser_1.Parser.parse(file).subscribe(json => observer.next(json));
+                .subscribe(files => {
+                let array = [];
+                files.forEach(file => {
+                    Parser_1.Parser.parse(file).subscribe(project => {
+                        array.push(project);
+                        if (array.length == files.length) {
+                            observer.next(array);
+                        }
+                    });
+                });
             });
         });
     });
