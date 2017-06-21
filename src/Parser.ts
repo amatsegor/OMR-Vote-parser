@@ -12,6 +12,7 @@ const unrtf = require('unrtf');
 const fs = require("fs");
 
 let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
+var counter = 0;
 
 export class Parser {
 
@@ -19,7 +20,10 @@ export class Parser {
         return Observable.create(observer => {
             let parser = new Parser();
             parser.parseRtf(path)
-                .then(result => parser.parseHtml(result))
+                .then(result => {
+                    counter++;
+                    return parser.parseHtml([result, counter]);
+                })
                 .then(parsed => observer.next(parsed))
                 .catch(rejectReason => {
                     Observable.throw(rejectReason);
@@ -43,8 +47,8 @@ export class Parser {
         })
     }
 
-    private parseHtml(html: string): Session {
-        let $ = cheerio.load(html);
+    private parseHtml(tuple: [string, number]): Session {
+        let $ = cheerio.load(tuple[0]);
 
         let title: string = $("p:nth-child(8)").text();
 
@@ -86,7 +90,8 @@ export class Parser {
             });
 
         let project: Project = {
-            _id: Parser.hashCode(votingTime).toLocaleString(),
+            _id: Parser.hashCode(title).toLocaleString(),
+            orderInSession: tuple[1],
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,

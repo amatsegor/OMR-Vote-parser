@@ -8,12 +8,16 @@ let cheerio = require("cheerio");
 const unrtf = require('unrtf');
 const fs = require("fs");
 let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
+var counter = 0;
 class Parser {
     static parse(path) {
         return rxjs_1.Observable.create(observer => {
             let parser = new Parser();
             parser.parseRtf(path)
-                .then(result => parser.parseHtml(result))
+                .then(result => {
+                counter++;
+                return parser.parseHtml([result, counter]);
+            })
                 .then(parsed => observer.next(parsed))
                 .catch(rejectReason => {
                 rxjs_1.Observable.throw(rejectReason);
@@ -36,8 +40,8 @@ class Parser {
             });
         });
     }
-    parseHtml(html) {
-        let $ = cheerio.load(html);
+    parseHtml(tuple) {
+        let $ = cheerio.load(tuple[0]);
         let title = $("p:nth-child(8)").text();
         let votingTime = $('p:nth-child(7)').text();
         let sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
@@ -74,7 +78,8 @@ class Parser {
             return { deputyId: deputy._id, vote: vote };
         });
         let project = {
-            _id: Parser.hashCode(votingTime).toLocaleString(),
+            _id: Parser.hashCode(title).toLocaleString(),
+            orderInSession: tuple[1],
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,

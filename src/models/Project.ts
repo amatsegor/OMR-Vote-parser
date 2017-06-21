@@ -5,6 +5,7 @@
 export class Project {
     _id: string;
     title: string;
+    orderInSession: number;
     sessionDate: string;
     votingTime: string;
     votingIds: string[];
