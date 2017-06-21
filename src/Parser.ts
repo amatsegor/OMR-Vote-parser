@@ -77,18 +77,18 @@ export class Parser {
                     vote = array[4];
                 }
                 deputy = {
-                    id: Parser.hashCode(name + surname + fatherName),
+                    _id: Parser.hashCode(name + surname + fatherName),
                     name: name,
                     surname: surname,
                     fatherName: fatherName
                 };
                 deputies.push(deputy);
                 if (array[5]) vote += " " + array[5];
-                return {deputyId: deputy.id, vote: vote};
+                return {deputyId: deputy._id, vote: vote};
             });
 
         let project: Project = {
-            id: Parser.hashCode(votingTime),
+            _id: Parser.hashCode(votingTime),
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,

@@ -4,6 +4,7 @@ import {Project} from "./Project";
  */
 
 export declare class Session {
+    _id: number;
     title: string;
     date: string;
     projects: Project[];
