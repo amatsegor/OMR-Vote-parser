@@ -11,17 +11,14 @@ import {Vote} from "./Vote";
 
 export class Parser {
 
-    static parse(path: string): Observable<string> {
+    static parse(path: string): Observable<Vote[]> {
         return Observable.create(observer => {
             let parser = new Parser();
-            parser.unrtf(path)
+            parser.parseRtf(path)
                 .then(result => himalaya.parse(result))
                 .then(json => parser.parseJson(json))
                 .then(parsed => {
-                    const jsonString = JSON.stringify(parsed);
-                    console.log(path);
-                    console.log(jsonString);
-                    observer.next(jsonString);
+                    observer.next(parsed);
                 })
                 .catch(rejectReason => {
                     Observable.throw(rejectReason);
@@ -30,7 +27,7 @@ export class Parser {
         })
     }
 
-    unrtf(filePath: string): Promise<string> {
+    parseRtf(filePath: string): Promise<string> {
         return new Promise((resolve, reject) => {
             this.readFile(filePath)
                 .then(data => {

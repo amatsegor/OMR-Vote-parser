@@ -13,14 +13,11 @@ class Parser {
     static parse(path) {
         return rxjs_1.Observable.create(observer => {
             let parser = new Parser();
-            parser.unrtf(path)
+            parser.parseRtf(path)
                 .then(result => himalaya.parse(result))
                 .then(json => parser.parseJson(json))
                 .then(parsed => {
-                const jsonString = JSON.stringify(parsed);
-                console.log(path);
-                console.log(jsonString);
-                observer.next(jsonString);
+                observer.next(parsed);
             })
                 .catch(rejectReason => {
                 rxjs_1.Observable.throw(rejectReason);
@@ -28,7 +25,7 @@ class Parser {
             });
         });
     }
-    unrtf(filePath) {
+    parseRtf(filePath) {
         return new Promise((resolve, reject) => {
             this.readFile(filePath)
                 .then(data => {
