@@ -3,7 +3,7 @@
  */
 
 export class Deputy {
-    _id: number;
+    _id: string;
     name: string;
     surname: string;
     fatherName: string

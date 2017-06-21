@@ -65,7 +65,7 @@ class Parser {
                 vote = array[4];
             }
             deputy = {
-                _id: Parser.hashCode(name + surname + fatherName),
+                _id: Parser.hashCode(name + surname + fatherName).toLocaleString(),
                 name: name,
                 surname: surname,
                 fatherName: fatherName
@@ -76,7 +76,7 @@ class Parser {
             return { deputyId: deputy._id, vote: vote };
         });
         let project = {
-            _id: Parser.hashCode(votingTime),
+            _id: Parser.hashCode(votingTime).toLocaleString(),
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,

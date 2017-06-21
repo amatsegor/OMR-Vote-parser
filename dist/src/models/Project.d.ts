@@ -4,7 +4,7 @@ import {Voting} from "./Voting";
  */
 
 export declare class Project {
-    _id: number;
+    _id: string;
     title: string;
     sessionDate: string;
     votingTime: string;
