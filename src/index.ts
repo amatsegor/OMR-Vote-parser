@@ -17,9 +17,9 @@ export function parseVotingsZip(url: string): Observable<Session> {
                     files.forEach(file => {
                         Parser.parse(file).subscribe(session => {
                             sessionObjects.push(session);
-                            deputies.push(session.deputies);
-                            votings.push(session.votings);
-                            projects.push(session.projects);
+                            deputies.push.apply(deputies, session.deputies);
+                            votings.push.apply(votings, session.votings);
+                            projects.push.apply(projects, session.projects);
                             if (sessionObjects.length == files.length) {
 
                                 const first = sessionObjects[0];
@@ -38,7 +38,7 @@ export function parseVotingsZip(url: string): Observable<Session> {
                 })
         })
     })
-};
+}
 
 
 function unique(deputies: Deputy[]): Deputy[] {

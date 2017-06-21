@@ -16,9 +16,9 @@ function parseVotingsZip(url) {
                 files.forEach(file => {
                     Parser_1.Parser.parse(file).subscribe(session => {
                         sessionObjects.push(session);
-                        deputies.push(session.deputies);
-                        votings.push(session.votings);
-                        projects.push(session.projects);
+                        deputies.push.apply(deputies, session.deputies);
+                        votings.push.apply(votings, session.votings);
+                        projects.push.apply(projects, session.projects);
                         if (sessionObjects.length == files.length) {
                             const first = sessionObjects[0];
                             let finalSession = {
@@ -38,7 +38,6 @@ function parseVotingsZip(url) {
     });
 }
 exports.parseVotingsZip = parseVotingsZip;
-;
 function unique(deputies) {
     if (!deputies || deputies.length == 0)
         return [];
