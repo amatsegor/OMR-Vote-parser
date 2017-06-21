@@ -1,8 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Created by amatsegor on 6/21/17.
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 class Project {
 }
 exports.Project = Project;

@@ -1,15 +1,6 @@
 import {Observable} from "rxjs";
-import {Project} from "./models/Project";
-import {Deputy} from "./models/Deputy";
-/**
- * Created by amatsegor on 5/6/17.
- */
-
-export declare class ProjectTuple {
-    project: Project;
-    deputies: Deputy[];
-}
+import {Session} from "./models/Session";
 
 export declare class Parser {
-    static parse(path: string): Observable<ProjectTuple>;
+    static parse(path: string): Observable<Session>;
 }

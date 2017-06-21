@@ -33,5 +33,5 @@ Downloader.get("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_
 
 parseVotingsZip("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_14_06_17.zip")
     .subscribe(arr => {
-
+        console.log(arr);
     });

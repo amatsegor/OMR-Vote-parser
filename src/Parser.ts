@@ -2,6 +2,7 @@ import {Observable} from "rxjs";
 import {Deputy} from "./models/Deputy";
 import {Project} from "./models/Project";
 import {Voting} from "./models/Voting";
+import {Session} from "./models/Session";
 /**
  * Created by amatsegor on 5/6/17.
  */
@@ -12,14 +13,9 @@ const fs = require("fs");
 
 let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
 
-export class ProjectTuple {
-    project: Project;
-    deputies: Deputy[];
-}
-
 export class Parser {
 
-    static parse(path: string): Observable<ProjectTuple> {
+    static parse(path: string): Observable<Session> {
         return Observable.create(observer => {
             let parser = new Parser();
             parser.parseRtf(path)
@@ -47,7 +43,7 @@ export class Parser {
         })
     }
 
-    private parseHtml(html: string): ProjectTuple {
+    private parseHtml(html: string): Session {
         let $ = cheerio.load(html);
 
         let title: string = $("p:nth-child(8)").text();
@@ -57,6 +53,8 @@ export class Parser {
         let sessionDate: string = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
 
         let deputies: Deputy[] = [];
+
+        let votingIds: string[] = [];
 
         let votings: Voting[] = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
@@ -92,10 +90,17 @@ export class Parser {
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,
-            votings: votings
+            votingIds: votingIds
         };
 
-        return {project: project, deputies: deputies};
+        return {
+            _id: sessionDate,
+            title: "",
+            date: sessionDate,
+            projects: [project],
+            deputies: deputies,
+            votings: votings
+        };
     }
 
     private readFile(filePath: string): Promise<number[]> {
