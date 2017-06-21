@@ -5,7 +5,7 @@
   },
   "name": "omr-vote-converter",
   "description": "Converts shitty RTFs of deputies votings proudly presented by Odessa City Council into something readable and easy-to-use",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/amatsegor/OMR-Vote-parser",
   "repository": {
     "type": "git",
@@ -14,10 +14,9 @@
   "main": "dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
   "dependencies": {
-    "himalaya": "^0.2.7",
+    "cheerio": "^1.0.0-rc.1",
     "mkpath": "0.1.0",
     "node-curl-download": "0.0.2",
-    "rtf-parser": "^1.0.4",
     "rxjs": "latest",
     "unrtf": "^0.2.1",
     "unzip": "latest"

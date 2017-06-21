@@ -1,4 +1,4 @@
-import {Vote} from "../../src/Vote";
+import {Voting} from "../../src/models/Voting";
 import {Observable} from "rxjs";
 /**
  * Created by amatsegor on 5/6/17.
@@ -12,7 +12,7 @@ export declare class Parser {
 
     private readFile(filePath: string): Promise<number[]>;
 
-    private parseJson(array: any[]): Vote[];
+    private parseJson(array: any[]): Voting[];
 
     private bin2String(array: number[]): string;
 }

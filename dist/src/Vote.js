@@ -11,4 +11,4 @@ class Vote {
     }
 }
 exports.Vote = Vote;
-//# sourceMappingURL=Vote.js.map
+//# sourceMappingURL=Voting.js.map

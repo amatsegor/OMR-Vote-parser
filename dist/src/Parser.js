@@ -1,24 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
+const Voting_1 = require("./models/Voting");
 /**
  * Created by amatsegor on 5/6/17.
  */
-let rtfparser = require("rtf-parser");
+let cheerio = require("cheerio");
 const unrtf = require('unrtf');
-const himalaya = require("himalaya");
 const fs = require("fs");
-const Vote_1 = require("./Vote");
+let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
 class Parser {
     static parse(path) {
         return rxjs_1.Observable.create(observer => {
             let parser = new Parser();
             parser.parseRtf(path)
-                .then(result => himalaya.parse(result))
-                .then(json => parser.parseJson(json))
-                .then(parsed => {
-                observer.next(parsed);
-            })
+                .then(result => parser.parseHtml(result))
+                .then(parsed => observer.next(parsed))
                 .catch(rejectReason => {
                 rxjs_1.Observable.throw(rejectReason);
                 console.log(rejectReason);
@@ -29,9 +26,9 @@ class Parser {
         return new Promise((resolve, reject) => {
             this.readFile(filePath)
                 .then(data => {
-                unrtf(Parser.bin2String(data), {}, (error, result) => {
+                unrtf(Parser.bin2String(data), (error, result) => {
                     if (error || result.html == '') {
-                        reject(error ? error : "Result of file " + filePath + " is empty");
+                        reject(error ? error : "Result of file " + filePath + " for data " + data + " is empty");
                     }
                     else {
                         resolve(result.html);
@@ -39,6 +36,50 @@ class Parser {
                 });
             });
         });
+    }
+    parseHtml(html) {
+        let $ = cheerio.load(html);
+        let title = $("p:nth-child(8)").text();
+        let votingTime = $('p:nth-child(7)').text();
+        let sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
+        let votings = $('p:nth-child(12)')[0].children
+            .filter(ths => ths.type == 'text')
+            .map(text => text.data.trim())
+            .filter(text => text != '')
+            .map(string => string.split(" ").filter(string => string.length > 0))
+            .map(array => {
+            var deputy;
+            var name = "", surname = "", fatherName = "", vote = '';
+            if (validVotes.indexOf(array[3]) > -1) {
+                surname = array[1];
+                name = array[2];
+                vote = array[3];
+            }
+            else {
+                surname = array[1];
+                name = array[2];
+                fatherName = array[3];
+                vote = array[4];
+            }
+            deputy = {
+                id: Parser.hashCode(name + surname + fatherName),
+                name: name,
+                surname: surname,
+                fatherName: fatherName
+            };
+            if (array[5])
+                vote += " " + array[5];
+            return new Voting_1.Voting(deputy, vote);
+        });
+        let project = {
+            id: Parser.hashCode(votingTime),
+            sessionDate: sessionDate,
+            votingTime: votingTime,
+            title: title,
+            votings: votings
+        };
+        console.log(project);
+        return project;
     }
     readFile(filePath) {
         return new Promise((resolve, reject) => {
@@ -53,27 +94,18 @@ class Parser {
             });
         });
     }
-    parseJson(array) {
-        let rawVoteArray = array
-            .filter(obj => Array.isArray(obj.children))
-            .map(obj => obj.children)
-            .filter(array => array && Array.isArray(array) && array.length > 100)[0];
-        return rawVoteArray
-            .filter(item => item.content)
-            .map(item => item.content.trim())
-            .filter(string => string.length > 0)
-            .map(string => string.split(" ").filter(string => string.length > 0))
-            .map(array => {
-            let id = array[0];
-            let name = array[1] + " " + array[2] + " " + array[3];
-            let vote = array[4];
-            if (array[5])
-                vote += " " + array[5];
-            return new Vote_1.Vote(id, name, vote);
-        });
-    }
     static bin2String(array) {
         return String.fromCharCode.apply(String, array);
+    }
+    static hashCode(str) {
+        if (str.length == 0)
+            return 0;
+        var hash = 0, i;
+        for (i = 0; i < str.length; i++) {
+            let char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+        }
+        return hash;
     }
 }
 exports.Parser = Parser;

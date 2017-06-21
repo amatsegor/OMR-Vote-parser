@@ -5,7 +5,7 @@ import {Parser} from "../src/Parser";
 import {Unzipper} from "../src/Unzipper"
 import {Downloader} from "../src/Downloader";
 
-// Parser.parse('Gol20_p1.1.rtf');
+Parser.parse('Gol20_p1.1.rtf').subscribe(val => console.log(val));
 
 /*Unzipper.unzip("Golos_14_06_17.zip")
  .subscribe(val => {
@@ -13,7 +13,7 @@ import {Downloader} from "../src/Downloader";
  console.log(val);
  }, err => {
 
- });*/
+ });
 
 // Downloader.get("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_14_06_17.zip");
 Downloader.get("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_14_06_17.zip", filePath => {
@@ -28,3 +28,4 @@ Downloader.get("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_
 
         })
 });
+*/
