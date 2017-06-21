@@ -60,6 +60,8 @@ export class Parser {
 
         let votingIds: string[] = [];
 
+        let projectId = Parser.hashCode(title).toLocaleString();
+
         let votings: Voting[] = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
             .map(text => text.data.trim())
@@ -86,11 +88,18 @@ export class Parser {
                 };
                 deputies.push(deputy);
                 if (array[5]) vote += " " + array[5];
-                return {deputyId: deputy._id, vote: vote};
+
+                let voting: Voting = {
+                    deputyId: deputy._id, vote: vote, _id: projectId + deputy._id
+                };
+
+                votingIds.push(voting._id);
+
+                return voting;
             });
 
         let project: Project = {
-            _id: Parser.hashCode(title).toLocaleString(),
+            _id: projectId,
             orderInSession: tuple[1],
             sessionDate: sessionDate,
             votingTime: votingTime,
