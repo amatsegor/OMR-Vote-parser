@@ -8,6 +8,9 @@ let cheerio = require("cheerio");
 const unrtf = require('unrtf');
 const fs = require("fs");
 let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
+class ProjectTuple {
+}
+exports.ProjectTuple = ProjectTuple;
 class Parser {
     static parse(path) {
         return rxjs_1.Observable.create(observer => {
@@ -41,6 +44,7 @@ class Parser {
         let title = $("p:nth-child(8)").text();
         let votingTime = $('p:nth-child(7)').text();
         let sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
+        let deputies = [];
         let votings = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
             .map(text => text.data.trim())
@@ -66,9 +70,10 @@ class Parser {
                 surname: surname,
                 fatherName: fatherName
             };
+            deputies.push(deputy);
             if (array[5])
                 vote += " " + array[5];
-            return { deputy: deputy, vote: vote };
+            return { deputyId: deputy.id, vote: vote };
         });
         let project = {
             id: Parser.hashCode(votingTime),
@@ -78,7 +83,7 @@ class Parser {
             votings: votings
         };
         console.log(project);
-        return project;
+        return { project: project, deputies: deputies };
     }
     readFile(filePath) {
         return new Promise((resolve, reject) => {

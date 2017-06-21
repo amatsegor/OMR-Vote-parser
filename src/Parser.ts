@@ -1,7 +1,7 @@
 import {Observable} from "rxjs";
-import {Voting} from "./models/Voting";
 import {Deputy} from "./models/Deputy";
 import {Project} from "./models/Project";
+import {Voting} from "./models/Voting";
 /**
  * Created by amatsegor on 5/6/17.
  */
@@ -12,9 +12,14 @@ const fs = require("fs");
 
 let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
 
+export class ProjectTuple {
+    project: Project;
+    deputies: Deputy[];
+}
+
 export class Parser {
 
-    static parse(path: string): Observable<Project> {
+    static parse(path: string): Observable<ProjectTuple> {
         return Observable.create(observer => {
             let parser = new Parser();
             parser.parseRtf(path)
@@ -42,7 +47,7 @@ export class Parser {
         })
     }
 
-    private parseHtml(html: string): Project {
+    private parseHtml(html: string): ProjectTuple {
         let $ = cheerio.load(html);
 
         let title: string = $("p:nth-child(8)").text();
@@ -51,7 +56,9 @@ export class Parser {
 
         let sessionDate: string = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
 
-        let votings = $('p:nth-child(12)')[0].children
+        let deputies: Deputy[] = [];
+
+        let votings: Voting[] = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
             .map(text => text.data.trim())
             .filter(text => text != '')
@@ -75,8 +82,9 @@ export class Parser {
                     surname: surname,
                     fatherName: fatherName
                 };
+                deputies.push(deputy);
                 if (array[5]) vote += " " + array[5];
-                return {deputy: deputy, vote: vote};
+                return {deputyId: deputy.id, vote: vote};
             });
 
         let project: Project = {
@@ -89,7 +97,7 @@ export class Parser {
 
         console.log(project);
 
-        return project;
+        return {project: project, deputies: deputies};
     }
 
     private readFile(filePath: string): Promise<number[]> {

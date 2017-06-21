@@ -4,6 +4,6 @@ import {Deputy} from "./Deputy";
  */
 
 export class Voting {
-    deputy: Deputy;
+    deputyId: number;
     vote: string;
 }
