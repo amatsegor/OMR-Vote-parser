@@ -2,5 +2,9 @@ import {Observable} from "rxjs";
 import {Session} from "./models/Session";
 
 export declare class Parser {
-    static parse(path: string): Observable<Session>;
+    private index: number;
+
+    constructor(index: number);
+
+    static parse(path: string, index: number): Observable<Session>;
 }
