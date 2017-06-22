@@ -1,5 +1,4 @@
 import {Observable} from "rxjs";
-import {Project} from "./models/";
 import {Session} from "./models/Session";
 /**
  * Created by amatsegor on 6/20/17.

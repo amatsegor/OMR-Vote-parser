@@ -47,7 +47,7 @@ class Parser {
         let sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
         let deputies = [];
         let votingIds = [];
-        let projectId = Parser.hashCode(title).toLocaleString();
+        let projectId = Parser.hashCode(title).toLocaleString() + tuple[1];
         let votings = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
             .map(text => text.data.trim())

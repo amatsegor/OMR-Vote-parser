@@ -60,7 +60,7 @@ export class Parser {
 
         let votingIds: string[] = [];
 
-        let projectId = Parser.hashCode(title).toLocaleString();
+        let projectId = Parser.hashCode(title).toLocaleString() + tuple[1];
 
         let votings: Voting[] = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
