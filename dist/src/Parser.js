@@ -14,7 +14,13 @@ class Parser {
             let parser = new Parser();
             parser.parseRtf(path)
                 .then(result => {
-                return parser.parseHtml(result);
+                const pathSplit = path.split("/");
+                var projectNumber = pathSplit[pathSplit.length - 1];
+                projectNumber = projectNumber.substring(projectNumber.indexOf('_p') + 2, projectNumber.indexOf('.rtf'));
+                if (projectNumber.match("\\d{1,2}\\.\\d{1,2}") == null) {
+                    projectNumber = "9";
+                }
+                return parser.parseHtml([result, projectNumber]);
             })
                 .then(parsed => observer.next(parsed))
                 .catch(rejectReason => {
@@ -38,8 +44,8 @@ class Parser {
             });
         });
     }
-    parseHtml(html) {
-        let $ = cheerio.load(html);
+    parseHtml(tuple) {
+        let $ = cheerio.load(tuple[0]);
         let title = $("p:nth-child(8)").text();
         let votingTime = $('p:nth-child(7)').text();
         let sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
@@ -82,6 +88,7 @@ class Parser {
         });
         let project = {
             _id: projectId,
+            projectNumber: tuple[1],
             orderInSession: 0,
             sessionDate: sessionDate,
             votingTime: votingTime,

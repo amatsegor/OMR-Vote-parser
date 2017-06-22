@@ -5,6 +5,7 @@
 export class Project {
     _id: string;
     title: string;
+    projectNumber: string;
     orderInSession: number;
     sessionDate: string;
     votingTime: string;

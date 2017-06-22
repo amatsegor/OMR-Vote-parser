@@ -20,7 +20,13 @@ export class Parser {
             let parser = new Parser();
             parser.parseRtf(path)
                 .then(result => {
-                    return parser.parseHtml(result);
+                    const pathSplit = path.split("/");
+                    var projectNumber = pathSplit[pathSplit.length - 1];
+                    projectNumber = projectNumber.substring(projectNumber.indexOf('_p')+2, projectNumber.indexOf('.rtf'));
+                    if (projectNumber.match("\\d{1,2}\\.\\d{1,2}") == null) {
+                        projectNumber = "9"
+                    }
+                    return parser.parseHtml([result, projectNumber]);
                 })
                 .then(parsed => observer.next(parsed))
                 .catch(rejectReason => {
@@ -45,8 +51,8 @@ export class Parser {
         })
     }
 
-    private parseHtml(html: string): Session {
-        let $ = cheerio.load(html);
+    private parseHtml(tuple: string[]): Session {
+        let $ = cheerio.load(tuple[0]);
 
         let title: string = $("p:nth-child(8)").text();
 
@@ -98,6 +104,7 @@ export class Parser {
 
         let project: Project = {
             _id: projectId,
+            projectNumber: tuple[1],
             orderInSession: 0,
             sessionDate: sessionDate,
             votingTime: votingTime,
