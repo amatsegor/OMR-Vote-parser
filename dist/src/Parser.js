@@ -9,9 +9,9 @@ const unrtf = require('unrtf');
 const fs = require("fs");
 let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
 class Parser {
-    static parse(path) {
+    static parse(path, index = 0) {
         return rxjs_1.Observable.create(observer => {
-            let parser = new Parser();
+            let parser = new Parser(index);
             parser.parseRtf(path)
                 .then(result => {
                 const pathSplit = path.split("/");
@@ -28,6 +28,9 @@ class Parser {
                 console.log(rejectReason);
             });
         });
+    }
+    constructor(index) {
+        this.index = index;
     }
     parseRtf(filePath) {
         return new Promise((resolve, reject) => {
@@ -51,7 +54,7 @@ class Parser {
         let sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
         let deputies = [];
         let votingIds = [];
-        let projectId = Parser.hashCode(title).toLocaleString();
+        let projectId = Parser.hashCode(title).toString().substring(0, 6) + this.index;
         let votings = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
             .map(text => text.data.trim())
@@ -72,7 +75,7 @@ class Parser {
                 vote = array[4];
             }
             deputy = {
-                _id: Parser.hashCode(name + surname + fatherName).toLocaleString(),
+                _id: Parser.hashCode(name + surname + fatherName).toString().substring(0, 6),
                 name: name,
                 surname: surname,
                 fatherName: fatherName
@@ -89,7 +92,7 @@ class Parser {
         let project = {
             _id: projectId,
             projectNumber: tuple[1],
-            orderInSession: 0,
+            orderInSession: this.index,
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,
@@ -129,7 +132,7 @@ class Parser {
             let char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
         }
-        return hash;
+        return hash > 0 ? hash : -hash;
     }
 }
 exports.Parser = Parser;

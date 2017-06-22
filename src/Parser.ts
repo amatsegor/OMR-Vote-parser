@@ -15,14 +15,14 @@ let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутні�
 
 export class Parser {
 
-    static parse(path: string): Observable<Session> {
+    static parse(path: string, index: number = 0): Observable<Session> {
         return Observable.create(observer => {
-            let parser = new Parser();
+            let parser = new Parser(index);
             parser.parseRtf(path)
                 .then(result => {
                     const pathSplit = path.split("/");
                     var projectNumber = pathSplit[pathSplit.length - 1];
-                    projectNumber = projectNumber.substring(projectNumber.indexOf('_p')+2, projectNumber.indexOf('.rtf'));
+                    projectNumber = projectNumber.substring(projectNumber.indexOf('_p') + 2, projectNumber.indexOf('.rtf'));
                     if (projectNumber.match("\\d{1,2}\\.\\d{1,2}") == null) {
                         projectNumber = "9"
                     }
@@ -34,6 +34,12 @@ export class Parser {
                     console.log(rejectReason)
                 })
         })
+    }
+
+    private index: number;
+
+    constructor(index: number) {
+        this.index = index;
     }
 
     parseRtf(filePath: string): Promise<string> {
@@ -64,7 +70,7 @@ export class Parser {
 
         let votingIds: string[] = [];
 
-        let projectId = Parser.hashCode(title).toLocaleString();
+        let projectId = Parser.hashCode(title).toString().substring(0, 6) + this.index;
 
         let votings: Voting[] = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
@@ -85,7 +91,7 @@ export class Parser {
                     vote = array[4];
                 }
                 deputy = {
-                    _id: Parser.hashCode(name + surname + fatherName).toLocaleString(),
+                    _id: Parser.hashCode(name + surname + fatherName).toString().substring(0, 6),
                     name: name,
                     surname: surname,
                     fatherName: fatherName
@@ -105,7 +111,7 @@ export class Parser {
         let project: Project = {
             _id: projectId,
             projectNumber: tuple[1],
-            orderInSession: 0,
+            orderInSession: this.index,
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,
@@ -147,6 +153,6 @@ export class Parser {
             let char = str.charCodeAt(i);
             hash = ((hash << 5) - hash) + char;
         }
-        return hash;
+        return hash > 0 ? hash : -hash;
     }
 }

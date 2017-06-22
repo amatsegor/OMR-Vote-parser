@@ -14,9 +14,7 @@ function parseVotingsZip(url) {
                 .subscribe(files => {
                 let sessionObjects = [], deputies = [], votings = [], projects = [];
                 files.forEach((file, index) => {
-                    Parser_1.Parser.parse(file).subscribe(session => {
-                        session.projects[0].orderInSession = index;
-                        session.projects[0]._id += index;
+                    Parser_1.Parser.parse(file, index).subscribe(session => {
                         sessionObjects.push(session);
                         deputies.push.apply(deputies, session.deputies);
                         votings.push.apply(votings, session.votings);
