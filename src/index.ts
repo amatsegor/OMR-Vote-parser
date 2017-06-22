@@ -14,8 +14,10 @@ export function parseVotingsZip(url: string): Observable<Session> {
             Unzipper.unzip(filePath)
                 .subscribe(files => {
                     let sessionObjects = [], deputies = [], votings = [], projects = [];
-                    files.forEach(file => {
+                    files.forEach((file, index) => {
                         Parser.parse(file).subscribe(session => {
+                            session.projects[0].orderInSession = index;
+                            session.projects[0]._id += index;
                             sessionObjects.push(session);
                             deputies.push.apply(deputies, session.deputies);
                             votings.push.apply(votings, session.votings);

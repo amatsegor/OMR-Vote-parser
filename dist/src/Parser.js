@@ -8,15 +8,13 @@ let cheerio = require("cheerio");
 const unrtf = require('unrtf');
 const fs = require("fs");
 let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутній', 'НЕ'];
-var counter = 0;
 class Parser {
     static parse(path) {
         return rxjs_1.Observable.create(observer => {
             let parser = new Parser();
             parser.parseRtf(path)
                 .then(result => {
-                counter++;
-                return parser.parseHtml([result, counter]);
+                return parser.parseHtml(result);
             })
                 .then(parsed => observer.next(parsed))
                 .catch(rejectReason => {
@@ -40,14 +38,14 @@ class Parser {
             });
         });
     }
-    parseHtml(tuple) {
-        let $ = cheerio.load(tuple[0]);
+    parseHtml(html) {
+        let $ = cheerio.load(html);
         let title = $("p:nth-child(8)").text();
         let votingTime = $('p:nth-child(7)').text();
         let sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
         let deputies = [];
         let votingIds = [];
-        let projectId = Parser.hashCode(title).toLocaleString() + tuple[1];
+        let projectId = Parser.hashCode(title).toLocaleString();
         let votings = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
             .map(text => text.data.trim())
@@ -84,7 +82,7 @@ class Parser {
         });
         let project = {
             _id: projectId,
-            orderInSession: tuple[1],
+            orderInSession: 0,
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,
