@@ -3,7 +3,10 @@
  * Created by amatsegor on 6/21/17.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-class Project {
-}
+var Project = (function () {
+    function Project() {
+    }
+    return Project;
+}());
 exports.Project = Project;
 //# sourceMappingURL=Project.js.map

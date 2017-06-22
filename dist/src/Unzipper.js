@@ -3,27 +3,29 @@
  * Created by amatsegor on 6/20/17.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
-const unzip = require("unzip");
-const rxjs_1 = require("rxjs");
-class Unzipper {
-    static unzip(path) {
-        return rxjs_1.Observable.create(observer => {
+var fs = require("fs");
+var unzip = require("unzip");
+var rxjs_1 = require("rxjs");
+var Unzipper = (function () {
+    function Unzipper() {
+    }
+    Unzipper.unzip = function (path) {
+        return rxjs_1.Observable.create(function (observer) {
             if (!fs.existsSync("temp")) {
-                fs.mkdir("temp", err => {
+                fs.mkdir("temp", function (err) {
                     if (err)
                         console.log(err);
                     rxjs_1.Observable.throw("Unable to create target folder");
                 });
             }
-            let filesArray = [];
+            var filesArray = [];
             fs.createReadStream(path)
                 .pipe(unzip.Parse())
-                .on('entry', (entry) => {
+                .on('entry', function (entry) {
                 var type = entry.type;
                 var fileName = entry.path;
                 if (type == 'File' && fileName.match("Gol.+.rtf")) {
-                    const filePath = "temp/" + fileName;
+                    var filePath = "temp/" + fileName;
                     entry.pipe(fs.createWriteStream(filePath));
                     filesArray.push(filePath);
                 }
@@ -31,11 +33,12 @@ class Unzipper {
                     entry.autodrain();
                 }
             })
-                .on('close', () => {
+                .on('close', function () {
                 observer.next(filesArray);
             });
         });
-    }
-}
+    };
+    return Unzipper;
+}());
 exports.Unzipper = Unzipper;
 //# sourceMappingURL=Unzipper.js.map

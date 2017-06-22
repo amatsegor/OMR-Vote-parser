@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = require("../src/index");
+var index_1 = require("../src/index");
 // Parser.parse('Gol20_p1.1.rtf').subscribe(val => console.log(val));
 /*Unzipper.unzip("Golos_14_06_17.zip")
  .subscribe(val => {
@@ -25,7 +25,7 @@ Downloader.get("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_
 });
 */
 index_1.parseVotingsZip("http://omr.gov.ua/images/File/DODATKI_2017/Gorsovet/GOLOS/Golos_14_06_17.zip")
-    .subscribe(arr => {
+    .subscribe(function (arr) {
     console.log(arr);
 });
 //# sourceMappingURL=example1.js.map
