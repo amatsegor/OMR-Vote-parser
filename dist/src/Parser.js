@@ -99,7 +99,13 @@ var Parser = (function () {
             votingTime: votingTime,
             title: title,
             votingIds: votingIds,
-            html: tuple[0]
+            html: tuple[0],
+            votingResult: {
+                _for: parseInt($("p:nth-child(16)> strong").text().replace('\t', '').split(" ")[2]),
+                _against: parseInt($("p:nth-child(17)> strong").text().replace('\t', '').split(" ")[2]),
+                _neutral: parseInt($("p:nth-child(18)> strong").text().replace('\t', '').split(" ")[1]),
+                _didntvote: parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3])
+            }
         };
         return {
             _id: Math.floor(Parser.hashCode(sessionDate) / 10000),
