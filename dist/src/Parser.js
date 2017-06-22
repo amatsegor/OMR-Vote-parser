@@ -56,7 +56,7 @@ var Parser = (function () {
         var sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
         var deputies = [];
         var votingIds = [];
-        var projectId = Parser.hashCode(title).toString().substring(0, 6) + this.index;
+        var projectId = Math.floor(Parser.hashCode(title) / 10000) + this.index;
         var votings = $('p:nth-child(12)')[0].children
             .filter(function (ths) { return ths.type == 'text'; })
             .map(function (text) { return text.data.trim(); })
@@ -77,7 +77,7 @@ var Parser = (function () {
                 vote = array[4];
             }
             deputy = {
-                _id: Parser.hashCode(name + surname + fatherName).toString().substring(0, 6),
+                _id: Math.floor(Parser.hashCode(name + surname + fatherName) / 10000),
                 name: name,
                 surname: surname,
                 fatherName: fatherName
@@ -86,7 +86,7 @@ var Parser = (function () {
             if (array[5])
                 vote += " " + array[5];
             var voting = {
-                deputyId: deputy._id, vote: vote, _id: projectId + deputy._id
+                deputyId: deputy._id, vote: vote, _id: projectId | deputy._id
             };
             votingIds.push(voting._id);
             return voting;
@@ -102,7 +102,7 @@ var Parser = (function () {
             html: tuple[0]
         };
         return {
-            _id: sessionDate,
+            _id: Math.floor(Parser.hashCode(sessionDate) / 10000),
             title: "",
             date: sessionDate,
             projects: [project],

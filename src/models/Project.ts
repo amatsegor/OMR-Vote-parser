@@ -3,12 +3,12 @@
  */
 
 export class Project {
-    _id: string;
+    _id: number;
     title: string;
     projectNumber: string;
     orderInSession: number;
     sessionDate: string;
     votingTime: string;
-    votingIds: string[];
+    votingIds: number[];
     html: string;
 }

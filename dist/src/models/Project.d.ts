@@ -3,7 +3,7 @@
  */
 
 export declare class Project {
-    _id: string;
+    _id: number;
     title: string;
     projectNumber: string;
     orderInSession: number;

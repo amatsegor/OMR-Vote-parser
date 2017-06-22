@@ -6,7 +6,7 @@ import {Deputy} from "./Deputy";
  */
 
 export class Session {
-    _id: string;
+    _id: number;
     title: string;
     date: string;
     projects: Project[];

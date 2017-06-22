@@ -68,9 +68,9 @@ export class Parser {
 
         let deputies: Deputy[] = [];
 
-        let votingIds: string[] = [];
+        let votingIds: number[] = [];
 
-        let projectId = Parser.hashCode(title).toString().substring(0, 6) + this.index;
+        let projectId = Math.floor(Parser.hashCode(title) / 10000) + this.index;
 
         let votings: Voting[] = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
@@ -91,7 +91,7 @@ export class Parser {
                     vote = array[4];
                 }
                 deputy = {
-                    _id: Parser.hashCode(name + surname + fatherName).toString().substring(0, 6),
+                    _id: Math.floor(Parser.hashCode(name + surname + fatherName) / 10000),
                     name: name,
                     surname: surname,
                     fatherName: fatherName
@@ -100,7 +100,7 @@ export class Parser {
                 if (array[5]) vote += " " + array[5];
 
                 let voting: Voting = {
-                    deputyId: deputy._id, vote: vote, _id: projectId + deputy._id
+                    deputyId: deputy._id, vote: vote, _id: projectId | deputy._id
                 };
 
                 votingIds.push(voting._id);
@@ -120,7 +120,7 @@ export class Parser {
         };
 
         return {
-            _id: sessionDate,
+            _id: Math.floor(Parser.hashCode(sessionDate) / 10000),
             title: "",
             date: sessionDate,
             projects: [project],

@@ -3,7 +3,7 @@
  */
 
 export class Voting {
-    _id: string;
-    deputyId: string;
+    _id: number;
+    deputyId: number;
     vote: string;
 }

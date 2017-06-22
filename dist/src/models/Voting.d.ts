@@ -3,7 +3,7 @@
  */
 
 export declare class Voting {
-    _id: string;
-    deputy: string;
+    _id: number;
+    deputy: number;
     vote: string;
 }
