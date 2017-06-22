@@ -10,4 +10,5 @@ export class Project {
     sessionDate: string;
     votingTime: string;
     votingIds: string[];
+    html: string;
 }

@@ -93,7 +93,8 @@ class Parser {
             sessionDate: sessionDate,
             votingTime: votingTime,
             title: title,
-            votingIds: votingIds
+            votingIds: votingIds,
+            html: tuple[0]
         };
         return {
             _id: sessionDate,
