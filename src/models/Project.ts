@@ -6,6 +6,7 @@ import {VotingResult} from "./VotingResult";
 export class Project {
     _id: number;
     title: string;
+    sessionId: number;
     votingResult: VotingResult;
     projectNumber: string;
     orderInSession: number;

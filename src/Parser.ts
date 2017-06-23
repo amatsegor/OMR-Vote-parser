@@ -15,7 +15,8 @@ let validVotes = ['ЗА', 'ПРОТИ', 'УТРИМАВСЯ', 'відсутні�
 
 export class Parser {
 
-    static parse(path: string, index: number = 0): Observable<Session> {
+    static parse(path: string, index?: number): Observable<Session> {
+        if (!index) index = 0;
         return Observable.create(observer => {
             let parser = new Parser(index);
             parser.parseRtf(path)
@@ -60,16 +61,12 @@ export class Parser {
     private parseHtml(tuple: string[]): Session {
         let $ = cheerio.load(tuple[0]);
 
-        let title: string = $("p:nth-child(8)").text();
-
-        let votingTime: string = $('p:nth-child(7)').text();
-
         let sessionDate: string = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
-
+        let sessionId = Math.floor(Parser.hashCode(sessionDate) / 10000);
+        let title: string = $("p:nth-child(8)").text();
+        let votingTime: string = $('p:nth-child(7)').text();
         let deputies: Deputy[] = [];
-
         let votingIds: number[] = [];
-
         let projectId = Math.floor(Parser.hashCode(title) / 10000) + this.index;
 
         let votings: Voting[] = $('p:nth-child(12)')[0].children
@@ -100,7 +97,10 @@ export class Parser {
                 if (array[5]) vote += " " + array[5];
 
                 let voting: Voting = {
-                    deputyId: deputy._id, vote: vote, _id: projectId | deputy._id
+                    _id: projectId | deputy._id,
+                    deputyId: deputy._id,
+                    projectId: projectId,
+                    vote: vote
                 };
 
                 votingIds.push(voting._id);
@@ -110,6 +110,7 @@ export class Parser {
 
         let project: Project = {
             _id: projectId,
+            sessionId: sessionId,
             projectNumber: tuple[1],
             orderInSession: this.index,
             sessionDate: sessionDate,
@@ -118,15 +119,16 @@ export class Parser {
             votingIds: votingIds,
             html: tuple[0],
             votingResult: {
-                _for : parseInt($("p:nth-child(16)> strong").text().replace('\t', '').split(" ")[2]),
-                _against : parseInt($("p:nth-child(17)> strong").text().replace('\t', '').split(" ")[2]),
-                _neutral : parseInt($("p:nth-child(18)> strong").text().replace('\t', '').split(" ")[1]),
-                _didntvote : parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3])
+                _for: parseInt($("p:nth-child(16)> strong").text().replace('\t', '').split(" ")[2]),
+                _against: parseInt($("p:nth-child(17)> strong").text().replace('\t', '').split(" ")[2]),
+                _neutral: parseInt($("p:nth-child(18)> strong").text().replace('\t', '').split(" ")[1]),
+                _didntvote: parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3])
             }
         };
 
+
         return {
-            _id: Math.floor(Parser.hashCode(sessionDate) / 10000),
+            _id: sessionId,
             title: "",
             date: sessionDate,
             projects: [project],

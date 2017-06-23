@@ -13,7 +13,8 @@ var Parser = (function () {
         this.index = index;
     }
     Parser.parse = function (path, index) {
-        if (index === void 0) { index = 0; }
+        if (!index)
+            index = 0;
         return rxjs_1.Observable.create(function (observer) {
             var parser = new Parser(index);
             parser.parseRtf(path)
@@ -51,9 +52,10 @@ var Parser = (function () {
     };
     Parser.prototype.parseHtml = function (tuple) {
         var $ = cheerio.load(tuple[0]);
+        var sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
+        var sessionId = Math.floor(Parser.hashCode(sessionDate) / 10000);
         var title = $("p:nth-child(8)").text();
         var votingTime = $('p:nth-child(7)').text();
-        var sessionDate = $("p:nth-child(4)>strong:first-child").text().split(" ")[2];
         var deputies = [];
         var votingIds = [];
         var projectId = Math.floor(Parser.hashCode(title) / 10000) + this.index;
@@ -86,13 +88,17 @@ var Parser = (function () {
             if (array[5])
                 vote += " " + array[5];
             var voting = {
-                deputyId: deputy._id, vote: vote, _id: projectId | deputy._id
+                _id: projectId | deputy._id,
+                deputyId: deputy._id,
+                projectId: projectId,
+                vote: vote
             };
             votingIds.push(voting._id);
             return voting;
         });
         var project = {
             _id: projectId,
+            sessionId: sessionId,
             projectNumber: tuple[1],
             orderInSession: this.index,
             sessionDate: sessionDate,
@@ -108,7 +114,7 @@ var Parser = (function () {
             }
         };
         return {
-            _id: Math.floor(Parser.hashCode(sessionDate) / 10000),
+            _id: sessionId,
             title: "",
             date: sessionDate,
             projects: [project],

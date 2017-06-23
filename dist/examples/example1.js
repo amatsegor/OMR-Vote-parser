@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Created by amatsegor on 5/6/17.
+ */
 var index_1 = require("../src/index");
 // Parser.parse('Gol20_p1.1.rtf').subscribe(val => console.log(val));
 /*Unzipper.unzip("Golos_14_06_17.zip")

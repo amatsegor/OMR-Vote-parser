@@ -1,9 +1,6 @@
 /**
  * Created by amatsegor on 5/6/17.
  */
-import {Parser} from "../src/Parser";
-import {Unzipper} from "../src/Unzipper"
-import {Downloader} from "../src/Downloader";
 import {parseVotingsZip} from "../src/index";
 
 // Parser.parse('Gol20_p1.1.rtf').subscribe(val => console.log(val));

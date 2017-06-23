@@ -6,4 +6,5 @@ export class Voting {
     _id: number;
     deputyId: number;
     vote: string;
+    projectId: number
 }
