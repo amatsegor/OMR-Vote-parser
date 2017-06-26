@@ -68,6 +68,7 @@ export class Parser {
         let deputies: Deputy[] = [];
         let votingIds: number[] = [];
         let projectId = Math.floor(Parser.hashCode(title) / 10000) + this.index;
+        let absentDeps = [];
 
         let votings: Voting[] = $('p:nth-child(12)')[0].children
             .filter(ths => ths.type == 'text')
@@ -95,6 +96,7 @@ export class Parser {
                 };
                 deputies.push(deputy);
                 if (array[5]) vote += " " + array[5];
+                if (vote == 'відсутній') absentDeps.push(deputy._id);
 
                 let voting: Voting = {
                     _id: projectId | deputy._id,
@@ -118,6 +120,7 @@ export class Parser {
             title: title,
             votingIds: votingIds,
             html: tuple[0],
+            absentDeps: absentDeps,
             votingResult: {
                 _for: parseInt($("p:nth-child(16)> strong").text().replace('\t', '').split(" ")[2]),
                 _against: parseInt($("p:nth-child(17)> strong").text().replace('\t', '').split(" ")[2]),
@@ -125,7 +128,6 @@ export class Parser {
                 _didntvote: parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3])
             }
         };
-
 
         return {
             _id: sessionId,

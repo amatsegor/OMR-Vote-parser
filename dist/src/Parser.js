@@ -59,6 +59,7 @@ var Parser = (function () {
         var deputies = [];
         var votingIds = [];
         var projectId = Math.floor(Parser.hashCode(title) / 10000) + this.index;
+        var absentDeps = [];
         var votings = $('p:nth-child(12)')[0].children
             .filter(function (ths) { return ths.type == 'text'; })
             .map(function (text) { return text.data.trim(); })
@@ -87,6 +88,8 @@ var Parser = (function () {
             deputies.push(deputy);
             if (array[5])
                 vote += " " + array[5];
+            if (vote == 'відсутній')
+                absentDeps.push(deputy._id);
             var voting = {
                 _id: projectId | deputy._id,
                 deputyId: deputy._id,
@@ -106,6 +109,7 @@ var Parser = (function () {
             title: title,
             votingIds: votingIds,
             html: tuple[0],
+            absentDeps: absentDeps,
             votingResult: {
                 _for: parseInt($("p:nth-child(16)> strong").text().replace('\t', '').split(" ")[2]),
                 _against: parseInt($("p:nth-child(17)> strong").text().replace('\t', '').split(" ")[2]),

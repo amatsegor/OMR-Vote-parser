@@ -6,18 +6,21 @@ import {isNullOrUndefined} from "util";
 let Download = require("node-curl-download").Download;
 
 export class Downloader {
-    static get(url: string, callback: (filePath: string) => void, fileName?: string): void {
-        if (isNullOrUndefined(fileName)){
+    static get(url: string, fileName?: string): Promise<string> {
+        if (isNullOrUndefined(fileName)) {
             const splitUrl = url.split("/");
-            fileName = splitUrl[splitUrl.length-1];
+            fileName = splitUrl[splitUrl.length - 1];
         }
         let filePath = "./temp/" + fileName;
-        let dl = new Download(url, filePath);
 
-        dl.on('end', (code) => {
-            callback(filePath);
+        return new Promise(resolve => {
+            let dl = new Download(url, filePath);
+
+            dl.on('end', (code) => {
+                resolve(filePath);
+            });
+
+            dl.start();
         });
-
-        dl.start();
     }
 }

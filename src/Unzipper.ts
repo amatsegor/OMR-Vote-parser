@@ -4,17 +4,16 @@
 
 import fs = require("fs");
 import unzip = require("unzip");
-import {Observable} from "rxjs";
 
 export class Unzipper {
 
-    static unzip(path: string): Observable<string[]> {
+    static unzip(path: string): Promise<string[]> {
 
-        return Observable.create(observer => {
+        return new Promise((resolve, reject) => {
             if (!fs.existsSync("temp")) {
                 fs.mkdir("temp", err => {
                     if (err) console.log(err);
-                    Observable.throw("Unable to create target folder");
+                    reject("Unable to create target folder");
                 })
             }
 
@@ -34,7 +33,7 @@ export class Unzipper {
                     }
                 })
                 .on('close', () => {
-                    observer.next(filesArray);
+                    resolve(filesArray);
                 })
         });
     }

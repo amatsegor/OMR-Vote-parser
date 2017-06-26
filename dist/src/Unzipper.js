@@ -5,17 +5,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var unzip = require("unzip");
-var rxjs_1 = require("rxjs");
 var Unzipper = (function () {
     function Unzipper() {
     }
     Unzipper.unzip = function (path) {
-        return rxjs_1.Observable.create(function (observer) {
+        return new Promise(function (resolve, reject) {
             if (!fs.existsSync("temp")) {
                 fs.mkdir("temp", function (err) {
                     if (err)
                         console.log(err);
-                    rxjs_1.Observable.throw("Unable to create target folder");
+                    reject("Unable to create target folder");
                 });
             }
             var filesArray = [];
@@ -34,7 +33,7 @@ var Unzipper = (function () {
                 }
             })
                 .on('close', function () {
-                observer.next(filesArray);
+                resolve(filesArray);
             });
         });
     };

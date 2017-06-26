@@ -10,33 +10,50 @@ import {Deputy} from "./models/Deputy";
 
 export function parseVotingsZip(url: string): Observable<Session> {
     return Observable.create(observer => {
-        Downloader.get(url, filePath => {
-            Unzipper.unzip(filePath)
-                .subscribe(files => {
-                    let sessionObjects = [], deputies = [], votings = [], projects = [];
-                    files.forEach((file, index) => {
-                        Parser.parse(file, index).subscribe(session => {
-                            sessionObjects.push(session);
-                            deputies.push.apply(deputies, session.deputies);
-                            votings.push.apply(votings, session.votings);
-                            projects.push.apply(projects, session.projects);
-                            if (sessionObjects.length == files.length) {
+        Downloader.get(url)
+            .then(filePath => Unzipper.unzip(filePath))
+            .then(files => {
+                let sessionObjects = [], deputies = [], votings = [], projects = [];
+                let absents = [];
+                files.forEach((file, index) => {
+                    Parser.parse(file, index).subscribe(session => {
+                        session.projects[0].absentDeps
+                            .forEach(val => {
+                                let absentRecord = absents[val];
+                                if (absentRecord) {
+                                    absents[val]++;
+                                } else {
+                                    absents[val] = 1
+                                }
+                            });
+                        sessionObjects.push(session);
+                        deputies.push.apply(deputies, session.deputies);
+                        votings.push.apply(votings, session.votings);
+                        projects.push.apply(projects, session.projects);
+                        if (sessionObjects.length == files.length) {
 
-                                const first = sessionObjects[0];
-                                let finalSession: Session = {
-                                    _id: first._id,
-                                    title: "",
-                                    date: first.date,
-                                    deputies: unique(deputies),
-                                    votings: votings,
-                                    projects: projects
-                                };
-                                observer.next(finalSession);
-                            }
-                        })
-                    });
-                })
-        })
+                            let absentIds = [];
+                            absents.map((value, index) => {
+                                if (value == projects.length) {
+                                    absentIds.push(index)
+                                }
+                            });
+
+                            const first = sessionObjects[0];
+                            let finalSession: Session = {
+                                _id: first._id,
+                                title: "",
+                                date: first.date,
+                                deputies: unique(deputies),
+                                votings: votings,
+                                projects: projects,
+                                absentDeputies: absentIds
+                            };
+                            observer.next(finalSession);
+                        }
+                    })
+                });
+            })
     })
 }
 

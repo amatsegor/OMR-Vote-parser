@@ -12,6 +12,7 @@ export class Project {
     orderInSession: number;
     sessionDate: string;
     votingTime: string;
+    absentDeps: number[];
     votingIds: number[];
     html: string;
 }

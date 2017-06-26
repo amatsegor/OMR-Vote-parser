@@ -12,4 +12,5 @@ export class Session {
     projects: Project[];
     votings: Voting[];
     deputies: Deputy[];
+    absentDeputies: number[];
 }
