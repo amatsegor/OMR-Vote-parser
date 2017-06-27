@@ -7,4 +7,5 @@ export declare class VotingResult {
     _against: number;
     _neutral: number;
     _didntvote: number;
+    _absent: number;
 }

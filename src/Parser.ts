@@ -99,7 +99,7 @@ export class Parser {
                 if (vote == 'відсутній') absentDeps.push(deputy._id);
 
                 let voting: Voting = {
-                    _id: projectId | deputy._id,
+                    _id: projectId + deputy._id + Math.floor(Math.random() * 10),
                     deputyId: deputy._id,
                     projectId: projectId,
                     vote: vote
@@ -125,7 +125,8 @@ export class Parser {
                 _for: parseInt($("p:nth-child(16)> strong").text().replace('\t', '').split(" ")[2]),
                 _against: parseInt($("p:nth-child(17)> strong").text().replace('\t', '').split(" ")[2]),
                 _neutral: parseInt($("p:nth-child(18)> strong").text().replace('\t', '').split(" ")[1]),
-                _didntvote: parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3])
+                _didntvote: parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3]),
+                _absent: absentDeps.length
             }
         };
 
@@ -135,7 +136,8 @@ export class Parser {
             date: sessionDate,
             projects: [project],
             deputies: deputies,
-            votings: votings
+            votings: votings,
+            absentDeputies: []
         };
     }
 

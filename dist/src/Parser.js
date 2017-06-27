@@ -91,7 +91,7 @@ var Parser = (function () {
             if (vote == 'відсутній')
                 absentDeps.push(deputy._id);
             var voting = {
-                _id: projectId | deputy._id,
+                _id: projectId + deputy._id + Math.floor(Math.random() * 10),
                 deputyId: deputy._id,
                 projectId: projectId,
                 vote: vote
@@ -114,7 +114,8 @@ var Parser = (function () {
                 _for: parseInt($("p:nth-child(16)> strong").text().replace('\t', '').split(" ")[2]),
                 _against: parseInt($("p:nth-child(17)> strong").text().replace('\t', '').split(" ")[2]),
                 _neutral: parseInt($("p:nth-child(18)> strong").text().replace('\t', '').split(" ")[1]),
-                _didntvote: parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3])
+                _didntvote: parseInt($("p:nth-child(19)> strong").text().replace('\t', '').split(" ")[3]),
+                _absent: absentDeps.length
             }
         };
         return {
@@ -123,7 +124,8 @@ var Parser = (function () {
             date: sessionDate,
             projects: [project],
             deputies: deputies,
-            votings: votings
+            votings: votings,
+            absentDeputies: []
         };
     };
     Parser.prototype.readFile = function (filePath) {
